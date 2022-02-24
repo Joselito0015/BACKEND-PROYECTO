@@ -1,0 +1,22 @@
+[
+  {
+    "id": 2,
+    "timestamp": 1645702045872,
+    "nombre": "guanabanassssaasasaa",
+    "descripcion": "es una fruta",
+    "codigo": "1021",
+    "foto": "https://blog.oncosalud.pe/hubfs/beneficios-de-la-guanabana-para-tu-salud-imagen-1-1.jpg",
+    "precio": "10",
+    "stock": "25"
+  },
+  {
+    "id": 4,
+    "timestamp": 1645702051973,
+    "nombre": "guanabanassssaasasaa",
+    "descripcion": "es una fruta",
+    "codigo": "1021",
+    "foto": "https://blog.oncosalud.pe/hubfs/beneficios-de-la-guanabana-para-tu-salud-imagen-1-1.jpg",
+    "precio": "10",
+    "stock": "25"
+  }
+]
