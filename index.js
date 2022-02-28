@@ -233,6 +233,182 @@ function updateProductos(req, res,ruta){
 
 
 
+
+function GetProductsCarrito(req, res,ruta){
+
+    try{
+        fs.readFile(ruta,'utf-8', (error, contenido)=>{
+            if(error) {
+                throw new Error(error);
+            }else{
+                if (req.params.id== undefined){
+                    res.status(200).json({msg: "id no encontrado"});
+                }
+                else {
+                    let info=JSON.parse(contenido)
+                    console.log(req.params.id)
+                    const indexcarrito=info.findIndex(x => x.id == req.params.id);
+                    console.log(indexcarrito)
+                    if (indexcarrito != undefined && indexcarrito!= -1){
+
+                        let prod=info[indexcarrito].productos
+                        let OBJson = JSON.stringify(info,null,2);
+                        res.status(200).json({productos: prod});
+                        fs.writeFileSync(ruta,OBJson,"utf-8");
+                    }
+                    else {
+                        res.status(200).json({msg: "Carrito no encontrado"});
+                    }
+                }
+                
+            }
+        })
+    }
+    catch(error){
+            console.error(error);
+        }   
+}
+
+
+
+
+function DeleteProductsCarrito(req, res,ruta){
+
+    try{
+        fs.readFile(ruta,'utf-8', (error, contenido)=>{
+            if(error) {
+                throw new Error(error);
+            }else{
+                if (req.params.id== undefined){
+                    res.status(200).json({msg: "id no encontrado"});
+                }
+                else {
+                    let info=JSON.parse(contenido)
+                    console.log(req.params.id)
+                    const indexcarrito=info.findIndex(x => x.id == req.params.id);
+                    if (indexcarrito != undefined){
+
+                        info[indexcarrito].productos =[]
+                        info.splice(indexcarrito, 1);
+                        let OBJson = JSON.stringify(info,null,2);
+                        res.status(200).json({data: info[indexcarrito]});
+                        fs.writeFileSync(ruta,OBJson,"utf-8");
+                    }
+                    else {
+                        res.status(200).json({msg: "Carrito no encontrado"});
+                    }
+                }
+                
+            }
+        })
+    }
+    catch(error){
+            console.error(error);
+        }   
+}
+
+
+
+function DeleteProductsCarritoID(req, res,ruta){
+
+    try{
+        fs.readFile(ruta,'utf-8', (error, contenido)=>{
+            if(error) {
+                throw new Error(error);
+            }else{
+                if (req.params.id== undefined){
+                    res.status(200).json({msg: "id no encontrado"});
+                }
+                else {
+                    let info=JSON.parse(contenido)
+                    console.log(req.params.id)
+                    const indexcarrito=info.findIndex(x => x.id == req.params.id);
+                    if (indexcarrito != undefined){
+
+
+                        const indexProducto=info[indexcarrito].productos.findIndex(x => x.id == req.params.id_prod);
+
+                        if (indexProducto != undefined){
+                            info[indexcarrito].productos.splice(indexcarrito, 1);
+                            let OBJson = JSON.stringify(info,null,2);
+                            res.status(200).json({data: info[indexcarrito]});
+                            fs.writeFileSync(ruta,OBJson,"utf-8");
+                        }
+                        else {
+                            res.status(200).json({msg: "Producto no encontrado"});
+                        }
+                    }
+                    else {
+                        res.status(200).json({msg: "Carrito no encontrado"});
+                    }
+                }
+                
+            }
+        })
+    }
+    catch(error){
+            console.error(error);
+        }   
+}
+
+
+
+
+function PostProductsCarritoID(req, res,ruta){
+
+    try{
+
+        let productos=fs.readFileSync(PATH_PRODUCTOS,'utf-8')
+        productos=JSON.parse(productos)
+        
+        fs.readFile(ruta,'utf-8', (error, contenido)=>{
+            if(error) {
+                throw new Error(error);
+            }else{
+                if (req.params.id== undefined){
+                    res.status(200).json({msg: "id no encontrado"});
+                }
+                else {
+                    let info=JSON.parse(contenido)
+                    console.log(req.params.id)
+                    const indexcarrito=info.findIndex(x => x.id == req.params.id);
+                    if (indexcarrito != undefined){
+
+                        
+                        const indexProducto=productos.findIndex(x => x.id == req.params.id_prod);
+
+                        if (indexProducto != undefined && indexProducto != -1){
+                            info[indexcarrito].productos.push(productos[indexProducto])
+                            let OBJson = JSON.stringify(info,null,2);
+                            res.status(200).json({data: info[indexcarrito]});
+                            fs.writeFileSync(ruta,OBJson,"utf-8");
+                        }
+                        else {
+                            res.status(200).json({msg: "Producto no encontrado"});
+                        }
+                    }
+                    else {
+                        res.status(200).json({msg: "Carrito no encontrado"});
+                    }
+                }
+                
+            }
+        })
+    }
+    catch(error){
+            console.error(error);
+        }   
+}
+
+
+
+
+
+
+
+
+
+
 /*---------------------   PRODUCTOS  --------------------- */
 
 routerProductos.get('/:id?', (req, res)=>{
@@ -257,7 +433,7 @@ routerProductos.delete('/:id', (req, res)=>{
 /*---------------------   CARRITO  --------------------- */
 
 routerCarrito.get('/:id/productos', (req, res)=>{
-  
+    GetProductsCarrito(req, res,PATH_CARRITO)
 })
 
 routerCarrito.post('/', (req, res)=>{
@@ -265,16 +441,16 @@ routerCarrito.post('/', (req, res)=>{
 })
 
 
-routerCarrito.post('/:id/productos', (req, res)=>{
-
+routerCarrito.post('/:id/productos/:id_prod', (req, res)=>{
+    PostProductsCarritoID(req, res,PATH_CARRITO)
 })
 
 routerCarrito.delete('/:id', (req, res)=>{
-
+    DeleteProductsCarrito(req, res,PATH_CARRITO)
 })
 
 routerCarrito.delete('/:id/productos/:id_prod', (req, res)=>{
-
+    DeleteProductsCarritoID(req, res,PATH_CARRITO)
 })
 
 
